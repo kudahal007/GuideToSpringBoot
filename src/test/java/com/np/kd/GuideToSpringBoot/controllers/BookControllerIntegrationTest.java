@@ -57,7 +57,7 @@ public class BookControllerIntegrationTest {
     }
 
     @Test
-    public void testThatListBooksReturnsHttpStatus200() throws Exception {
+    public void testThatListBooksReturnsHttpStatus200OK() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/books")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -70,5 +70,30 @@ public class BookControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].isbn").value("978-1-2345-6789-0"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("The Shadow in the Attic"));
+    }
+    @Test
+    public void testThatGetBookReturnsHttpStatus200OKWhenBookExist() throws Exception {
+        BookEntity testBookEntity = TestDataUtils.createTestBookEntityA(null);
+        bookService.createBook(testBookEntity.getIsbn(),testBookEntity);
+        mockMvc.perform(MockMvcRequestBuilders.get("/books/"+testBookEntity.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+    @Test
+    public void testThatGetBookReturnsHttpStatus404WhenBookDoesNotExist() throws Exception {
+        BookEntity testBookEntity = TestDataUtils.createTestBookEntityA(null);
+        bookService.createBook(testBookEntity.getIsbn(),testBookEntity);
+        mockMvc.perform(MockMvcRequestBuilders.get("/books/"+1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+    @Test
+    public void testThatGetBookReturnsBookWhenExists() throws Exception {
+        BookEntity testBookEntity = TestDataUtils.createTestBookEntityA(null);
+        bookService.createBook(testBookEntity.getIsbn(),testBookEntity);
+        mockMvc.perform(MockMvcRequestBuilders.get("/books/"+testBookEntity.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isbn").value("978-1-2345-6789-0"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("The Shadow in the Attic"));
     }
 }
