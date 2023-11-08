@@ -3,7 +3,6 @@ package com.np.kd.GuideToSpringBoot.controllers;
 import com.np.kd.GuideToSpringBoot.domain.dto.AuthorDto;
 import com.np.kd.GuideToSpringBoot.domain.entities.AuthorEntity;
 import com.np.kd.GuideToSpringBoot.domain.mappers.Mapper;
-import com.np.kd.GuideToSpringBoot.domain.mappers.impl.AuthorMapper;
 import com.np.kd.GuideToSpringBoot.services.AuthorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 public class AuthorController {
@@ -26,7 +24,7 @@ public class AuthorController {
     @PostMapping("/authors")
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto author) {
         AuthorEntity authorEntity = authorMapper.mapFrom(author);
-        AuthorEntity savedAuthorEntity = authorService.createAuthor(authorEntity);
+        AuthorEntity savedAuthorEntity = authorService.saveAuthor(authorEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(authorMapper.mapTo(savedAuthorEntity));
     }
 
@@ -42,5 +40,17 @@ public class AuthorController {
         Optional<AuthorEntity> authorEntity = authorService.findOne(id);
         return authorEntity.map(author -> ResponseEntity.status(HttpStatus.OK).body(authorMapper.mapTo(author)))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @PutMapping("/authors/{id}")
+    public ResponseEntity<AuthorDto> fullUpdateAuthor(@PathVariable("id") Long id,
+                                                      @RequestBody AuthorDto authorDto) {
+        if (!authorService.isExists(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        authorDto.setId(id);
+        AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
+        AuthorEntity savedAuthorEntity = authorService.saveAuthor(authorEntity);
+        return ResponseEntity.status(HttpStatus.OK).body(authorMapper.mapTo(savedAuthorEntity));
     }
 }
