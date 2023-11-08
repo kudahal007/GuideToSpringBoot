@@ -3,15 +3,14 @@ package com.np.kd.GuideToSpringBoot.controllers;
 import com.np.kd.GuideToSpringBoot.domain.dto.AuthorDto;
 import com.np.kd.GuideToSpringBoot.domain.entities.AuthorEntity;
 import com.np.kd.GuideToSpringBoot.domain.mappers.Mapper;
+import com.np.kd.GuideToSpringBoot.domain.mappers.impl.AuthorMapper;
 import com.np.kd.GuideToSpringBoot.services.AuthorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,5 +35,12 @@ public class AuthorController {
         List<AuthorEntity> authorEntities = authorService.findAll();
         List<AuthorDto> authorDtos = authorEntities.stream().map(authorMapper::mapTo).toList();
         return ResponseEntity.status(HttpStatus.OK).body(authorDtos);
+    }
+
+    @GetMapping("/authors/{id}")
+    public ResponseEntity<AuthorDto> getAuthor(@PathVariable("id") Long id) {
+        Optional<AuthorEntity> authorEntity = authorService.findOne(id);
+        return authorEntity.map(author -> ResponseEntity.status(HttpStatus.OK).body(authorMapper.mapTo(author)))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 }
