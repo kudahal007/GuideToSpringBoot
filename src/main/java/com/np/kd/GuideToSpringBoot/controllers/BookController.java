@@ -4,12 +4,10 @@ import com.np.kd.GuideToSpringBoot.domain.dto.BookDto;
 import com.np.kd.GuideToSpringBoot.domain.entities.BookEntity;
 import com.np.kd.GuideToSpringBoot.domain.mappers.Mapper;
 import com.np.kd.GuideToSpringBoot.services.BookService;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Book;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,12 +22,18 @@ public class BookController {
     }
 
     @PutMapping("/books/{isbn}")
-    public ResponseEntity<BookDto> createBook(
+    public ResponseEntity<BookDto> createUpdateBook(
             @PathVariable("isbn") String isbn,
             @RequestBody BookDto bookDto) {
         BookEntity bookEntity = bookMapper.mapFrom(bookDto);
-        BookEntity savedBookEntity = bookService.createBook(isbn, bookEntity);
-        return ResponseEntity.status(HttpStatus.CREATED).body(bookMapper.mapTo(savedBookEntity));
+        boolean bookExists = bookService.isExists(isbn);
+        BookEntity saveUpdateBookEntity = bookService.saveBook(isbn, bookEntity);
+        BookDto saveUpdateBookDto = bookMapper.mapTo(saveUpdateBookEntity);
+        if (bookExists) {
+            return ResponseEntity.status(HttpStatus.OK).body(saveUpdateBookDto);
+        } else {
+            return ResponseEntity.status(HttpStatus.CREATED).body(saveUpdateBookDto);
+        }
     }
 
     @GetMapping("/books")

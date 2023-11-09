@@ -5,8 +5,6 @@ import com.np.kd.GuideToSpringBoot.domain.dto.BookDto;
 import com.np.kd.GuideToSpringBoot.domain.entities.AuthorEntity;
 import com.np.kd.GuideToSpringBoot.domain.entities.BookEntity;
 
-import java.awt.print.Book;
-
 public class TestDataUtils {
 
     private TestDataUtils() {
@@ -43,18 +41,26 @@ public class TestDataUtils {
                 .age(44)
                 .build();
     }
-    public static BookEntity createTestBookEntityA(final AuthorEntity authorEntity){
+
+    public static BookEntity createTestBookEntityA(final AuthorEntity authorEntity) {
         return BookEntity.builder()
                 .isbn("978-1-2345-6789-0")
                 .title("The Shadow in the Attic")
                 .authorEntity(authorEntity)
                 .build();
     }
-    public static BookDto createTestBookDtoA(final AuthorDto authorDto){
+
+    public static BookDto createTestBookDtoA(final AuthorDto authorDto) {
         return BookDto.builder()
                 .isbn("978-1-2345-6789-0")
                 .title("The Shadow in the Attic")
                 .authorDto(authorDto)
                 .build();
+    }
+
+    public static BookDto createTestBookDToB(final AuthorDto authorDto) {
+        return BookDto.builder().isbn("978-1-2345-6789-1")
+                .title("The Art Of War")
+                .authorDto(authorDto).build();
     }
 }
