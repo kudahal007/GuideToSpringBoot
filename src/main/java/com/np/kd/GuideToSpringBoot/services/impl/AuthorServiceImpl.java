@@ -5,7 +5,6 @@ import com.np.kd.GuideToSpringBoot.repositories.AuthorRepository;
 import com.np.kd.GuideToSpringBoot.services.AuthorService;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +44,11 @@ public class AuthorServiceImpl implements AuthorService {
             Optional.ofNullable(authorEntity.getAge()).ifPresent(existingAuthor::setAge);
             return authorRepository.save(existingAuthor);
         }).orElseThrow(() -> new RuntimeException("Author does not exist"));
+    }
+
+    @Override
+    public void deleteAuthor(Long id) {
+        authorRepository.deleteById(id);
     }
 
 
