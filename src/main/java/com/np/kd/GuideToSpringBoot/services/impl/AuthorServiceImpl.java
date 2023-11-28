@@ -3,9 +3,10 @@ package com.np.kd.GuideToSpringBoot.services.impl;
 import com.np.kd.GuideToSpringBoot.domain.entities.AuthorEntity;
 import com.np.kd.GuideToSpringBoot.repositories.AuthorRepository;
 import com.np.kd.GuideToSpringBoot.services.AuthorService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,8 +23,8 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<AuthorEntity> findAll() {
-        return (List<AuthorEntity>) authorRepository.findAll();
+    public Page<AuthorEntity> findAll(Pageable pageable) {
+        return authorRepository.findAll(pageable);
     }
 
     @Override
@@ -50,6 +51,4 @@ public class AuthorServiceImpl implements AuthorService {
     public void deleteAuthor(Long id) {
         authorRepository.deleteById(id);
     }
-
-
 }

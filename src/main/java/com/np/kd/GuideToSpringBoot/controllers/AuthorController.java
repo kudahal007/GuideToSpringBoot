@@ -4,11 +4,12 @@ import com.np.kd.GuideToSpringBoot.domain.dto.AuthorDto;
 import com.np.kd.GuideToSpringBoot.domain.entities.AuthorEntity;
 import com.np.kd.GuideToSpringBoot.domain.mappers.Mapper;
 import com.np.kd.GuideToSpringBoot.services.AuthorService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -29,10 +30,9 @@ public class AuthorController {
     }
 
     @GetMapping("/authors")
-    public ResponseEntity<List<AuthorDto>> listAuthors() {
-        List<AuthorEntity> authorEntities = authorService.findAll();
-        List<AuthorDto> authorDtos = authorEntities.stream().map(authorMapper::mapTo).toList();
-        return ResponseEntity.status(HttpStatus.OK).body(authorDtos);
+    public Page<AuthorDto> listAuthors(Pageable pageable) {
+        Page<AuthorEntity> authorEntities = authorService.findAll(pageable);
+        return authorEntities.map(authorMapper::mapTo);
     }
 
     @GetMapping("/authors/{id}")
@@ -66,7 +66,7 @@ public class AuthorController {
         }
     }
     @DeleteMapping("/authors/{id}")
-    public ResponseEntity deleteAuthor(@PathVariable("id") Long id){
+    public ResponseEntity<?> deleteAuthor(@PathVariable("id") Long id){
         authorService.deleteAuthor(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

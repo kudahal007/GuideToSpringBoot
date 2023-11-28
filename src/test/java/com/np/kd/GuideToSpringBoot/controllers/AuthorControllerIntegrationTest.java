@@ -70,9 +70,9 @@ public class AuthorControllerIntegrationTest {
         authorService.saveAuthor(testAuthorEntity);
         mockMvc.perform(MockMvcRequestBuilders.get("/authors")
                         .contentType(MediaType.APPLICATION_JSON)
-                ).andExpect(MockMvcResultMatchers.jsonPath("$[0].id").isNumber())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Abigail Rose"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(80));
+                ).andExpect(MockMvcResultMatchers.jsonPath("$.content[0].id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].name").value("Abigail Rose"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].age").value(80));
     }
 
     @Test
