@@ -3,9 +3,10 @@ package com.np.kd.GuideToSpringBoot.services.impl;
 import com.np.kd.GuideToSpringBoot.domain.entities.BookEntity;
 import com.np.kd.GuideToSpringBoot.repositories.BookRepository;
 import com.np.kd.GuideToSpringBoot.services.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,9 +23,8 @@ public class BookServiceImpl implements BookService {
         return bookRepository.save(bookEntity);
     }
 
-    @Override
-    public List<BookEntity> findAll() {
-        return (List<BookEntity>) bookRepository.findAll();
+    public Page<BookEntity> findAll(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 
     @Override

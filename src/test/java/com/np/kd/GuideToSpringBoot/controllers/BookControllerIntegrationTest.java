@@ -22,9 +22,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
 public class BookControllerIntegrationTest {
-    private MockMvc mockMvc;
-    private ObjectMapper objectMapper;
-    private BookService bookService;
+    private final MockMvc mockMvc;
+    private final ObjectMapper objectMapper;
+    private final BookService bookService;
 
     @Autowired
     public BookControllerIntegrationTest(MockMvc mockMvc, BookService bookService) {
@@ -92,8 +92,8 @@ public class BookControllerIntegrationTest {
         bookService.saveBook(testBookEntity.getIsbn(), testBookEntity);
         mockMvc.perform(MockMvcRequestBuilders.get("/books")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].isbn").value("978-1-2345-6789-0"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("The Shadow in the Attic"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].isbn").value("978-1-2345-6789-0"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].title").value("The Shadow in the Attic"));
     }
 
     @Test

@@ -4,11 +4,12 @@ import com.np.kd.GuideToSpringBoot.domain.dto.BookDto;
 import com.np.kd.GuideToSpringBoot.domain.entities.BookEntity;
 import com.np.kd.GuideToSpringBoot.domain.mappers.Mapper;
 import com.np.kd.GuideToSpringBoot.services.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -48,10 +49,9 @@ public class BookController {
     }
 
     @GetMapping("/books")
-    public ResponseEntity<List<BookDto>> listBooks() {
-        List<BookEntity> bookEntities = bookService.findAll();
-        List<BookDto> bookDtos = bookEntities.stream().map(bookMapper::mapTo).toList();
-        return ResponseEntity.status(HttpStatus.OK).body(bookDtos);
+    public Page<BookDto> listBooks(Pageable pageable) {
+        Page<BookEntity> books = bookService.findAll(pageable);
+        return books.map(bookMapper::mapTo);
     }
 
     @GetMapping("/books/{isbn}")
@@ -62,7 +62,7 @@ public class BookController {
     }
 
     @DeleteMapping("/books/{isbn}")
-    public ResponseEntity deleteBook(@PathVariable("isbn") String isbn){
+    public ResponseEntity<?> deleteBook(@PathVariable("isbn") String isbn){
         bookService.deleteBook(isbn);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
